@@ -1,0 +1,1815 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex CLI — Setup, comandos y comparativa</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 38%, #2a2a2a 100%);
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-bg-dark: rgba(0, 0, 0, 0.4);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-border-soft: rgba(255, 255, 255, 0.12);
+      --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.4);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.8);
+      --text-muted: rgba(255, 255, 255, 0.6);
+      --accent: #ffffff;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-lg: 20px;
+      --max-width: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header & Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 0;
+      backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.8);
+      border-bottom: 1px solid var(--glass-border-soft);
+    }
+
+    nav {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .nav-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-social {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-social a {
+      display: inline-flex;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-soft);
+      color: var(--accent);
+      transition: all 0.2s ease;
+    }
+
+    .nav-social a:hover,
+    .nav-social a:focus-visible {
+      background: var(--glass-bg-dark);
+      border-color: var(--glass-border);
+      outline: none;
+      text-decoration: none;
+    }
+
+    .nav-social svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+    }
+
+    .nav-social .icon-fill {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .promo-banner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      align-items: center;
+      margin: 1.75rem auto 0;
+      max-width: 520px;
+      padding: 1.9rem 2.4rem;
+      border-radius: 22px;
+      text-align: center;
+      text-decoration: none;
+      overflow: hidden;
+      color: #ffffff;
+      background: linear-gradient(135deg, #ff6fb1 0%, #8457ff 60%, #34d2ff 100%);
+      box-shadow: 0 18px 38px rgba(132, 87, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      animation: promoFloat 6s ease-in-out infinite;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .promo-banner::before,
+    .promo-banner::after {
+      content: ";
+      position: absolute;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      opacity: 0.55;
+      z-index: 0;
+    }
+
+    .promo-banner::before {
+      width: 220px;
+      height: 220px;
+      top: -60px;
+      left: -40px;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 65%);
+    }
+
+    .promo-banner::after {
+      width: 260px;
+      height: 260px;
+      bottom: -80px;
+      right: -60px;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+
+    .promo-banner:hover,
+    .promo-banner:focus-visible {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 52px rgba(132, 87, 255, 0.55);
+      outline: none;
+    }
+
+    .promo-banner .promo-title {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .promo-banner .promo-text {
+      position: relative;
+      z-index: 1;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    @keyframes promoFloat {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(0.4deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent);
+      background: var(--glass-bg);
+      border-color: var(--glass-border);
+      outline: none;
+    }
+
+    /* Main Content */
+    main {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      margin: 4rem 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+
+    #creditos .card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    #creditos .credits-note {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .video-section {
+      margin: 2.5rem auto 3rem;
+      text-align: center;
+      max-width: 860px;
+    }
+
+    .video-section .section-title {
+      font-size: clamp(26px, 4vw, 34px);
+      margin-bottom: 0.5rem;
+    }
+
+    .video-section .section-subtitle {
+      margin-bottom: 1.75rem;
+      color: var(--text-secondary);
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--glass-border);
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 6rem 0;
+      background: var(--glass-bg-dark);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-strong);
+      margin-top: 2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 60px);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      backdrop-filter: blur(14px);
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .cta-button:hover,
+    .cta-button:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-strong);
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+    }
+
+    .cta-button.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--glass-border);
+    }
+
+    .cta-button.secondary:hover,
+    .cta-button.secondary:focus-visible {
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .prompt-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .prompt-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .important-card {
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .checklist-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border-soft);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .checklist-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--glass-border);
+    }
+
+    .check-marker {
+      width: 8px;
+      height: 100%;
+      min-height: 48px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.1));
+    }
+
+    .checklist-item.warning .check-marker {
+      background: linear-gradient(180deg, rgba(255, 107, 107, 0.9), rgba(255, 107, 107, 0.2));
+    }
+
+    .checklist-item.warning {
+      background: rgba(255, 107, 107, 0.08);
+      border-color: rgba(255, 107, 107, 0.4);
+    }
+
+    .check-content h4 {
+      margin-bottom: 0.25rem;
+      color: var(--accent);
+    }
+
+    .check-content p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+    /* Cards & Grids */
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--glass-border-soft);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-strong);
+      border-color: var(--glass-border);
+    }
+
+    .card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Quickstart Steps */
+    .quickstart-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .step-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--glass-border-soft);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .step-card::before {
+      content: attr(data-step);
+      position: absolute;
+      top: -12px;
+      left: 1.5rem;
+      background: var(--accent);
+      color: #000;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .step-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--glass-border);
+    }
+
+    /* Tabs */
+    .tabs {
+      margin: 2rem 0;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-soft);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(14px);
+    }
+
+    .tab-button.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .tab-button:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--glass-border);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Code Blocks */
+    .code-block {
+      position: relative;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border-soft);
+      border-radius: var(--radius);
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--glass-border-soft);
+    }
+
+    .code-lang {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .copy-button {
+      padding: 0.25rem 0.75rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-soft);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-button:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--accent);
+    }
+
+    .copy-button.copied {
+      background: var(--accent);
+      color: #000;
+    }
+
+    pre {
+      padding: 1rem;
+      margin: 0;
+      font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: inherit;
+    }
+
+    /* Comparison Table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--glass-border-soft);
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border-soft);
+    }
+
+    .comparison-table th {
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .comparison-table td {
+      color: var(--text-secondary);
+    }
+
+    /* Bullet Lists */
+    .bullet-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .bullet-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 4rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid var(--glass-border-soft);
+    }
+
+    footer p {
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    footer .footer-title {
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .footer-cta {
+      margin: 1.5rem auto 2rem;
+      padding: 1.75rem;
+      max-width: 480px;
+      background: var(--glass-bg-dark);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .footer-cta p {
+      color: var(--text-secondary);
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .footer-cta .cta-link {
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .footer-cta .cta-link:hover,
+    .footer-cta .cta-link:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-strong);
+      text-decoration: none;
+      outline: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .hero {
+        padding: 4rem 0;
+        margin-top: 1rem;
+      }
+
+      .tab-buttons {
+        justify-content: center;
+      }
+
+      main {
+        padding: 0 1rem;
+      }
+
+      section {
+        margin: 3rem 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .quickstart-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Focus Styles for Accessibility */
+    *:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Animation Classes */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-on-scroll {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Bar Charts */
+    .chart-container {
+      margin-top: 1rem;
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .bar::before {
+      content: attr(data-label);
+      min-width: 100px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .bar::after {
+      content: "";
+      flex: 1;
+      height: 8px;
+      background: var(--glass-border-soft);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar[data-value]::after {
+      background: linear-gradient(
+        to right,
+        var(--accent) 0%,
+        var(--accent) var(--value, 0%),
+        var(--glass-border-soft) var(--value, 0%),
+        var(--glass-border-soft) 100%
+      );
+      --value: attr(data-value);
+    }
+
+    .bar[data-value="95%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 95%, var(--glass-border-soft) 95%, var(--glass-border-soft) 100%); }
+    .bar[data-value="90%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 90%, var(--glass-border-soft) 90%, var(--glass-border-soft) 100%); }
+    .bar[data-value="80%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 80%, var(--glass-border-soft) 80%, var(--glass-border-soft) 100%); }
+    .bar[data-value="75%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 75%, var(--glass-border-soft) 75%, var(--glass-border-soft) 100%); }
+    .bar[data-value="70%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 70%, var(--glass-border-soft) 70%, var(--glass-border-soft) 100%); }
+    .bar[data-value="65%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 65%, var(--glass-border-soft) 65%, var(--glass-border-soft) 100%); }
+    .bar[data-value="60%"]::after { background: linear-gradient(to right, var(--accent) 0%, var(--accent) 60%, var(--glass-border-soft) 60%, var(--glass-border-soft) 100%); }
+    .bar[data-value="30%"]::after { background: linear-gradient(to right, #4ade80 0%, #4ade80 30%, var(--glass-border-soft) 30%, var(--glass-border-soft) 100%); }
+    .bar[data-value="100%"]::after { background: linear-gradient(to right, #ef4444 0%, #ef4444 100%); }
+  </style>
+</head>
+<body>
+  <header>
+    <nav role="navigation" aria-label="Navegación principal">
+      <div class="nav-brand">Codex CLI</div>
+      <ul class="nav-links">
+        <li><a href="#que-es">¿Qué es?</a></li>
+        <li><a href="#que-hace">¿Qué hace?</a></li>
+        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#instalacion">Instalación</a></li>
+        <li><a href="#comandos">Comandos</a></li>
+        <li><a href="#prompt-estructurador">Prompt</a></li>
+        <li><a href="#comparativa">Comparativa</a></li>
+        <li><a href="#creditos">Créditos</a></li>
+      </ul>
+      <div class="nav-social">
+        <a href="https://www.instagram.com/champisikora/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Champi Sikora">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
+            <circle cx="12" cy="12" r="4.2" />
+            <circle class="icon-fill" cx="17" cy="7" r="1.4" />
+          </svg>
+        </a>
+        <a href="https://www.youtube.com/SwebAI" target="_blank" rel="noopener noreferrer" aria-label="Canal de YouTube SwebAI">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <path d="M21.6 7.3c-.2-.8-.9-1.5-1.7-1.7C17.9 5.1 12 5.1 12 5.1s-5.9 0-7.9.5c-.8.2-1.5.9-1.7 1.7C2 9.4 2 12 2 12s0 2.6.4 4.7c.2.8.9 1.5 1.7 1.7 2 0.6 7.9 0.6 7.9 0.6s5.9 0 7.9-.5c.8-.2 1.5-.9 1.7-1.7.4-2.1.4-4.7.4-4.7s0-2.6-.4-4.8Z" />
+            <polygon class="icon-fill" points="10,9 16,12 10,15" />
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/juan-pablo-sikora-8827b4154/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Juan Pablo Sikora">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2.5" />
+            <rect class="icon-fill" x="7" y="10" width="2.6" height="7.4" />
+            <circle class="icon-fill" cx="8.3" cy="7.1" r="1.3" />
+            <path class="icon-fill" d="M12 10h2.6v1.2c.4-.7 1.2-1.4 2.5-1.4 2.4 0 3 1.6 3 3.6v4.9h-2.7v-4.3c0-1.1-.2-2-1.4-2s-1.5.9-1.5 2.1v4.2H12Z" />
+          </svg>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <a href="https://pro.rappi.com/argentina" class="promo-banner" target="_blank" rel="noopener noreferrer" aria-label="Ver promoción de ChatGPT Plus gratis">
+      <span class="promo-title">ChatGPT Plus Gratis</span>
+      <span class="promo-text">Si venís del video, apretá este botón, pero antes es muy importante que mires el video que te mandé en Instagram para entender esta promoción con Rappi.</span>
+    </a>
+    <section id="video-demo" class="video-section">
+      <h2 class="section-title">ChatGPT Plus + Codex CLI</h2>
+      <p class="section-subtitle">Revisa esta demostración antes de aplicar la promoción.</p>
+      <div class="video-wrapper">
+        <iframe src="https://www.youtube.com/embed/nsN-ZYujJK4" title="ChatGPT Plus + Codex CLI" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="hero visible">
+      <h1>Codex CLI — Setup, comandos y comparativa</h1>
+      <p>Tu terminal de IA para generar, modificar y depurar código con prompts</p>
+      <a href="#quickstart" class="cta-button" aria-label="Ir a la sección de quickstart">Ir a Quickstart</a>
+    </section>
+
+    <!-- ¿Qué es Codex CLI? -->
+    <section id="que-es">
+      <h2 class="section-title">¿Qué es Codex CLI?</h2>
+      <div class="card">
+        <p>Codex CLI es una herramienta de línea de comandos que usa modelos de IA para generar, modificar y depurar código desde tu terminal, dentro de tu repositorio. Propone cambios, instala dependencias y puede ejecutar pruebas con aprobación del usuario. Funciona en macOS/Windows (vía WSL) y Linux. La idea clave: IA + estructura + aprobación humana.</p>
+        
+        <h3>¿Por qué usarlo?</h3>
+        <ul class="bullet-list">
+          <li>Velocidad en scaffolding de proyectos</li>
+          <li>Refactors guiados por IA</li>
+          <li>Explicación automática de código</li>
+          <li>Pasos aprobados por el usuario</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ¿Qué hace Codex CLI? -->
+    <section id="que-hace">
+      <h2 class="section-title">¿Qué hace Codex CLI?</h2>
+      <p class="section-subtitle">Ejemplos prácticos de lo que puedes lograr con Codex CLI</p>
+      
+      <div class="grid-2">
+        <div class="card">
+          <h3>Generar código desde cero</h3>
+          <p>Crea componentes, funciones y módulos completos:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">ejemplo</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex \"crear un endpoint REST para usuarios con validación\"')" aria-label="Copiar ejemplo">Copiar</button>
+            </div>
+            <pre><code>codex "crear un endpoint REST para usuarios con validación"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Refactorizar código existente</h3>
+          <p>Mejora y optimiza tu código actual:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">ejemplo</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex \"refactorizar este archivo para usar TypeScript\"')" aria-label="Copiar ejemplo">Copiar</button>
+            </div>
+            <pre><code>codex "refactorizar este archivo para usar TypeScript"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Agregar tests automáticamente</h3>
+          <p>Genera tests completos para tu código:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">ejemplo</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex \"agregar tests unitarios a utils.js\"')" aria-label="Copiar ejemplo">Copiar</button>
+            </div>
+            <pre><code>codex "agregar tests unitarios a utils.js"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Corregir bugs y errores</h3>
+          <p>Identifica y soluciona problemas en tu código:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">ejemplo</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex \"arreglar los errores de ESLint en src/\"')" aria-label="Copiar ejemplo">Copiar</button>
+            </div>
+            <pre><code>codex "arreglar los errores de ESLint en src/"</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart -->
+    <section id="quickstart">
+      <h2 class="section-title">Quickstart</h2>
+      <p class="section-subtitle">Configura Codex CLI en 4 pasos simples</p>
+      
+      <div class="quickstart-steps">
+        <div class="step-card" data-step="1">
+          <h3>Prerrequisitos</h3>
+          <p>Asegúrate de tener instalado:</p>
+          <ul class="bullet-list">
+            <li>macOS, Windows (WSL2), o Linux</li>
+            <li>Node.js 22+ instalado</li>
+            <li>Git configurado</li>
+          </ul>
+        </div>
+
+        <div class="step-card" data-step="2">
+          <h3>Instalar Codex CLI</h3>
+          <p>Instala globalmente via npm:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'npm install -g @openai/codex')" aria-label="Copiar comando de instalación">Copiar</button>
+            </div>
+            <pre><code>npm install -g @openai/codex</code></pre>
+          </div>
+        </div>
+
+        <div class="step-card" data-step="3">
+          <h3>Iniciar Codex</h3>
+          <p>Al ejecutar, te pedirá iniciar sesión con ChatGPT Plus:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex')" aria-label="Copiar comando para iniciar">Copiar</button>
+            </div>
+            <pre><code>codex</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Instalación por Sistema Operativo -->
+    <section id="instalacion">
+      <h2 class="section-title">Instalación por Sistema Operativo</h2>
+      
+      <div class="tabs">
+        <div class="tab-buttons">
+          <button class="tab-button active" data-tab="macos" onclick="switchTab('macos', this)" aria-label="Instrucciones para macOS">macOS</button>
+          <button class="tab-button" data-tab="windows" onclick="switchTab('windows', this)" aria-label="Instrucciones para Windows WSL2">Windows (WSL2)</button>
+          <button class="tab-button" data-tab="linux" onclick="switchTab('linux', this)" aria-label="Instrucciones para Linux">Linux</button>
+        </div>
+
+        <div class="tab-content active" id="macos">
+          <div class="card">
+            <h3>macOS</h3>
+            <p>Instala las dependencias básicas. Homebrew es opcional pero recomendado.</p>
+            
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">bash</span>
+                <button class="copy-button" onclick="copyCode(this, 'node -v\ngit --version\nnpm install -g @openai/codex\ncodex --help')" aria-label="Copiar comandos para macOS">Copiar</button>
+              </div>
+              <pre><code>node -v
+git --version
+npm install -g @openai/codex
+codex --help</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="windows">
+          <div class="card">
+            <h3>Windows (WSL2 Ubuntu)</h3>
+            <p>Asegúrate de tener WSL2 habilitado. Dentro de Ubuntu, instala Node 22+ y Git.</p>
+            
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">bash</span>
+                <button class="copy-button" onclick="copyCode(this, 'node -v\ngit --version\nnpm install -g @openai/codex\ncodex --help')" aria-label="Copiar comandos para Windows WSL2">Copiar</button>
+              </div>
+              <pre><code>node -v
+git --version
+npm install -g @openai/codex
+codex --help</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="linux">
+          <div class="card">
+            <h3>Linux (Debian/Ubuntu)</h3>
+            <p>Actualiza el sistema e instala las dependencias básicas, Node 22+ y Git.</p>
+            
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">bash</span>
+                <button class="copy-button" onclick="copyCode(this, 'sudo apt update && sudo apt upgrade -y\nnode -v\ngit --version\nnpm install -g @openai/codex\ncodex --help')" aria-label="Copiar comandos para Linux">Copiar</button>
+              </div>
+              <pre><code>sudo apt update && sudo apt upgrade -y
+node -v
+git --version
+npm install -g @openai/codex
+codex --help</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comandos esenciales -->
+    <section id="comandos">
+      <h2 class="section-title">Comandos esenciales</h2>
+      <div class="card important-card">
+        <h3>MUY IMPORTANTE: Control de versiones</h3>
+        <p><strong>Siempre usa Git antes de ejecutar Codex CLI.</strong> Asi podes revertir cualquier cambio si algo sale mal.</p>
+
+        <div class="grid-2" style="margin-top: 1rem;">
+          <div>
+            <h4>Antes de usar Codex</h4>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">bash</span>
+                <button class="copy-button" onclick="copyCode(this, 'git init\ngit add .\ngit commit -m \"Backup antes de Codex\"')" aria-label="Copiar comandos de backup">Copiar</button>
+              </div>
+              <pre><code>git init\ngit add .\ngit commit -m "Backup antes de Codex"</code></pre>
+            </div>
+          </div>
+
+          <div>
+            <h4>Si algo se rompe</h4>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">bash</span>
+                <button class="copy-button" onclick="copyCode(this, 'git status\ngit diff\ngit checkout -- archivo\ngit reset --hard HEAD')" aria-label="Copiar comandos de recuperacion">Copiar</button>
+              </div>
+              <pre><code>git status\ngit diff\ngit checkout -- archivo\ngit reset --hard HEAD</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-top: 1rem;"><strong>Tip:</strong> Codex CLI funciona mejor cuando detecta un repo Git inicializado. Usa commits chicos y frecuentes.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <h3>Lanzar TUI</h3>
+          <p>Interface de usuario en terminal:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex')" aria-label="Copiar comando TUI">Copiar</button>
+            </div>
+            <pre><code>codex</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Prompt directo</h3>
+          <p>Ejecutar comandos directamente:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex \"arreglá los errores de lint en src/\"')" aria-label="Copiar comando directo">Copiar</button>
+            </div>
+            <pre><code>codex "arreglá los errores de lint en src/"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Modo no interactivo</h3>
+          <p>Ejecutar sin confirmación:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex exec \"explicá utils.ts\"')" aria-label="Copiar comando no interactivo">Copiar</button>
+            </div>
+            <pre><code>codex exec "explicá utils.ts"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Especificar modelo</h3>
+          <p>Usar un modelo específico:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex -m o4-mini \"creá un endpoint Express\"')" aria-label="Copiar comando con modelo específico">Copiar</button>
+            </div>
+            <pre><code>codex -m o4-mini "creá un endpoint Express"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Con aprobación</h3>
+          <p>Requerir confirmación explícita:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex --ask-for-approval \"refactorizá este módulo\"')" aria-label="Copiar comando con aprobación">Copiar</button>
+            </div>
+            <pre><code>codex --ask-for-approval "refactorizá este módulo"</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Actualizar Codex</h3>
+          <p>Mantener la herramienta actualizada:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex update')" aria-label="Copiar comando de actualización">Copiar</button>
+            </div>
+            <pre><code>codex update</code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Control completo</h3>
+          <p>Dar acceso completo sin confirmaciones:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">bash</span>
+              <button class="copy-button" onclick="copyCode(this, 'codex --approve-all --full-access')" aria-label="Copiar comando de control completo">Copiar</button>
+            </div>
+            <pre><code>codex --approve-all --full-access</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prompt para estructurar correctamente tu proyecto -->
+    <section id="prompt-estructurador">
+      <h2 class="section-title">Prompt para estructurar correctamente tu proyecto</h2>
+      <p class="section-subtitle">Usa este prompt especializado para planificar y organizar cualquier proyecto de software desde cero</p>
+
+      <div class="card prompt-card">
+        <h3>Estructurador profesional de proyectos de software</h3>
+        <p>Un prompt completo que te ayuda a planificar, estructurar y organizar proyectos como un senior developer con mas de 10 anos de experiencia.</p>
+
+        <div class="prompt-actions">
+          <button class="cta-button" type="button" onclick="togglePromptContent()" id="expandPromptBtn">Ver prompt completo</button>
+          <button class="cta-button secondary" type="button" onclick="copyPrompt(this)" id="copyPromptBtn">Copiar prompt completo</button>
+        </div>
+
+        <div class="code-block" id="promptPreview">
+          <div class="code-header">
+            <span class="code-lang">preview</span>
+          </div>
+          <pre><code># PROMPT: Estructurador Profesional de Proyectos de Software
+
+Actua como un Senior Developer y Tech Lead pragmatico con mas de 10 anos de experiencia...
+
+[Haz clic en "Ver prompt completo" para mostrar todo el contenido]</code></pre>
+        </div>
+
+        <div class="code-block" id="promptComplete" style="display: none;">
+          <div class="code-header">
+            <span class="code-lang">prompt completo</span>
+            <button class="copy-button" type="button" onclick="copyPrompt(this)" aria-label="Copiar prompt completo">Copiar</button>
+          </div>
+          <pre><code># PROMPT: Estructurador Profesional de Proyectos de Software
+
+Actua como un Senior Developer y Tech Lead pragmatico con mas de 10 anos de experiencia. Tu objetivo es ayudarme a planificar, estructurar y organizar un proyecto de software desde cero, maximizando productividad y minimizando friccion.
+
+## FASE 1: DISCOVERY (PREGUNTAS OBLIGATORIAS)
+
+Haz exactamente estas 5 preguntas, una por vez, esperando mi respuesta antes de continuar:
+
+1. PRODUCTO: Que quieres construir exactamente? Describe el problema que resuelve y para quien.
+2. ALCANCE: Cual es tu MVP y que debe poder hacer el usuario final?
+3. PLATAFORMA: Donde debe correr? (web app, API REST, CLI, mobile app, desktop, etc.)
+4. STACK: Tienes preferencias tecnicas o restricciones? (lenguaje, framework, base de datos, hosting, presupuesto)
+5. CONTEXTO: Cual es tu nivel tecnico y cuanto tiempo tienes para desarrollar?
+
+IMPORTANTE: Si no respondo alguna pregunta, asume la opcion mas estandar y marcala como [ASUNCION] con una breve justificacion.
+
+---
+
+## FASE 2: ENTREGABLE COMPLETO
+
+Una vez que tengas mis respuestas, entrega lo siguiente en este orden:
+
+### 1. Executive Summary
+- Problema: que resuelve
+- Usuario: para quien
+- Solucion: como lo resuelve
+- MVP: funcionalidad minima
+- Valor: por que es importante
+
+### 2. Arquitectura del proyecto
+```
+/proyecto-nombre/
+|-- src/                 # Codigo fuente principal
+|-- tests/               # Tests automatizados
+|-- docs/                # Documentacion
+|-- config/              # Configuraciones
+|-- scripts/             # Scripts de automatizacion
+|-- assets/              # Recursos estaticos
+`-- README.md            # Guia del proyecto
+```
+Detalla:
+- Estructura de carpetas especifica
+- Responsabilidad de cada modulo
+- Flujo de datos entre componentes
+- Patrones de diseno recomendados
+
+### 3. Stack tecnico completo
+- Runtime: lenguaje y version
+- Framework: principal + justificacion
+- Base de datos: tipo + motor
+- Testing: framework de tests
+- DevOps: CI/CD y contenedores
+- Tooling: linters, formatters y tasks
+- Dependencias clave: top 5-8 librerias
+
+### 4. Roadmap de desarrollo (paso a paso)
+
+#### Sprint 1: Setup and foundation
+- [ ] Tarea especifica - DoD medible - Test para verificar
+
+#### Sprint 2: Core features
+- [ ] Tarea especifica - DoD medible - Test para verificar
+
+#### Sprint 3: Polish and deploy
+- [ ] Tarea especifica - DoD medible - Test para verificar
+
+### 5. Riesgos y mitigaciones
+1. Riesgo tecnico - Probabilidad - Impacto - Plan de mitigacion
+2. Riesgo de tiempo - Probabilidad - Impacto - Plan de mitigacion
+3. Riesgo de complejidad - Probabilidad - Impacto - Plan de mitigacion
+
+### 6. Comandos de inicializacion
+```bash
+# Setup inicial del proyecto
+mkdir proyecto-nombre && cd proyecto-nombre
+# Agrega aqui los comandos especificos del stack
+```
+
+### 7. Prompts tecnicos para IA
+Copia y pega segun necesites:
+
+#### Setup inicial
+```
+"Genera el scaffolding completo para [PROYECTO] usando [STACK] con la arquitectura [ARQUITECTURA]. Incluye configuraciones de linters, formatters y scripts de desarrollo."
+```
+
+#### Desarrollo de features
+```
+"Desarrolla la funcionalidad [FEATURE] para [CONTEXTO] siguiendo el patron [PATRON]. Incluye validaciones, manejo de errores, tests y documentacion."
+```
+
+#### Testing
+```
+"Escribe tests completos para [MODULO] cubriendo casos felices, edge cases y errores. Usa [TEST_FRAMEWORK] con mocks para dependencias externas. Cobertura minima 80%."
+```
+
+#### Refactoring
+```
+"Refactoriza [CODIGO] aplicando principios SOLID y patrones [PATRONES]. Manten compatibilidad con [DEPENDENCIAS]. Explica cada cambio y su justificacion."
+```
+
+#### Debugging
+```
+"Analiza el error [ERROR] en [CONTEXTO]. Proporciona causa raiz, solucion paso a paso y prevencion futura. Incluye logs de debugging."
+```
+
+### 8. Checklist de validacion
+- [ ] Resuelve el problema especifico
+- [ ] El MVP es alcanzable en el tiempo disponible
+- [ ] El stack coincide con la experiencia del equipo
+- [ ] La arquitectura es escalable
+- [ ] Los riesgos estan identificados
+- [ ] Hay claridad para empezar ya
+
+---
+
+## Entrega final
+Pregunta: "Esta estructura refleja exactamente lo que necesitas o debo ajustar algo antes de empezar?"
+
+---
+
+## Modo de uso
+1. Copia este prompt completo
+2. Pegalo en ChatGPT, Claude u otra IA
+3. Responde las 5 preguntas del Discovery
+4. Recibe el plan completo y accionable
+5. Usa los prompts tecnicos conforme avances
+
+**Listo para estructurar cualquier proyecto de software como un profesional.**</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buenas practicas -->
+    <section id="buenas-practicas">
+      <h2 class="section-title">Buenas practicas: "Estructura antes que IA"</h2>
+      <div class="card">
+        <div class="checklist-container">
+          <div class="checklist-item">
+            <div class="check-marker"></div>
+            <div class="check-content">
+              <h4>Objetivo claro</h4>
+              <p>Define inputs, outputs, entidades y flujos antes de generar codigo.</p>
+            </div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="check-marker"></div>
+            <div class="check-content">
+              <h4>Arquitectura definida</h4>
+              <p>Establece la estructura de carpetas y capas clave antes de usar IA.</p>
+            </div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="check-marker"></div>
+            <div class="check-content">
+              <h4>Prompt tecnico especifico</h4>
+              <p>Incluye convenciones, dependencias, tests y limites bien claros.</p>
+            </div>
+          </div>
+
+          <div class="checklist-item warning">
+            <div class="check-marker"></div>
+            <div class="check-content">
+              <h4>Error comun</h4>
+              <p>Usar IA sin cerrar la arquitectura termina en codigo inconsistente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Comparativa -->
+    <section id="comparativa">
+      <h2 class="section-title">Comparativa: Cursor vs Claude Code vs Codex CLI</h2>
+      
+      <div class="grid-3">
+        <div class="card">
+          <h3>Codex CLI</h3>
+          <h4>Pros:</h4>
+          <ul class="bullet-list">
+            <li>Terminal/TUI nativo</li>
+            <li>Pasos aprobados por usuario</li>
+            <li>Foco específico en CLI</li>
+            <li>Integración con repositorios Git</li>
+          </ul>
+          <h4>Contras:</h4>
+          <ul class="bullet-list">
+            <li>Requiere Node 22+</li>
+            <li>Sin interfaz visual</li>
+            <li>Curva de aprendizaje para comandos</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Claude Code</h3>
+          <h4>Pros:</h4>
+          <ul class="bullet-list">
+            <li>Integración profunda con IDE</li>
+            <li>Contexto grande de archivos</li>
+            <li>Interface visual intuitiva</li>
+            <li>Soporte multi-lenguaje</li>
+          </ul>
+          <h4>Contras:</h4>
+          <ul class="bullet-list">
+            <li>Dependiente de Anthropic</li>
+            <li>Requiere suscripción</li>
+            <li>Menor control granular</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Cursor</h3>
+          <h4>Pros:</h4>
+          <ul class="bullet-list">
+            <li>Editor completo estilo VSCode</li>
+            <li>Refactors y chat integrado</li>
+            <li>Experiencia visual completa</li>
+            <li>Plugins y extensiones</li>
+          </ul>
+          <h4>Contras:</h4>
+          <ul class="bullet-list">
+            <li>Migración de editor existente</li>
+            <li>Más pesado en recursos</li>
+            <li>Costo de suscripción</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Tabla comparativa</h3>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Codex CLI</th>
+              <th>Claude Code</th>
+              <th>Cursor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tipo</td>
+              <td>CLI/Terminal</td>
+              <td>Plugin IDE</td>
+              <td>Editor completo</td>
+            </tr>
+            <tr>
+              <td>Costo</td>
+              <td>OpenAI API</td>
+              <td>Suscripción</td>
+              <td>Suscripción</td>
+            </tr>
+            <tr>
+              <td>Contexto</td>
+              <td>Repositorio</td>
+              <td>Archivos abiertos</td>
+              <td>Proyecto completo</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Nota:</strong> Elegir según tu flujo de trabajo: CLI puro, IDE con IA, o editor-IA integrado.</p>
+      </div>
+
+      <!-- Gráficos comparativos -->
+      <div class="grid-2" style="margin-top: 3rem;">
+        <div class="card">
+          <h3>Facilidad de uso</h3>
+          <div class="chart-container">
+            <div class="bar-chart">
+              <div class="bar" data-label="Cursor" data-value="95%"></div>
+              <div class="bar" data-label="Claude Code" data-value="90%"></div>
+              <div class="bar" data-label="Codex CLI" data-value="70%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Control granular</h3>
+          <div class="chart-container">
+            <div class="bar-chart">
+              <div class="bar" data-label="Codex CLI" data-value="95%"></div>
+              <div class="bar" data-label="Claude Code" data-value="75%"></div>
+              <div class="bar" data-label="Cursor" data-value="60%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Velocidad de setup</h3>
+          <div class="chart-container">
+            <div class="bar-chart">
+              <div class="bar" data-label="Claude Code" data-value="95%"></div>
+              <div class="bar" data-label="Codex CLI" data-value="80%"></div>
+              <div class="bar" data-label="Cursor" data-value="65%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Costo mensual</h3>
+          <div class="chart-container">
+            <div class="bar-chart">
+              <div class="bar" data-label="Codex CLI" data-value="30%" data-cost="$20"></div>
+              <div class="bar" data-label="Claude Code" data-value="60%" data-cost="$20"></div>
+              <div class="bar" data-label="Cursor" data-value="100%" data-cost="$20"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actualización y Mantenimiento -->dex</code></li>
+            <li>Ejecutar <code>codex --help</code></li>
+            <li>Crear repo demo</li>
+          </ul>
+        </div>
+
+        <div class="step-card" data-step="1">
+          <h3>Día 1: Introducción</h3>
+          <ul class="bullet-list">
+            <li>Hook inicial + "¿Qué es Codex CLI?"</li>
+            <li>Instalación + configuración API</li>
+            <li>Primer prompt generando endpoint</li>
+          </ul>
+        </div>
+
+        <div class="step-card" data-step="2">
+          <h3>Día 2: Práctica</h3>
+          <ul class="bullet-list">
+            <li>Explicar archivo existente</li>
+            <li>Agregar tests automáticamente</li>
+            <li>Pequeño refactor guiado</li>
+          </ul>
+        </div>
+
+        <div class="step-card" data-step="3">
+          <h3>Día 3: Finalización</h3>
+          <ul class="bullet-list">
+            <li>Edición del material grabado</li>
+            <li>CTA: DM "IA" para recibir guía</li>
+            <li>Publicación y promoción</li>
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="creditos">
+      <h2 class="section-title">Créditos</h2>
+      <p class="section-subtitle">Proyecto producido y curado por Juan Pablo Sikora.</p>
+      <div class="card">
+        <p class="credits-note"><strong>Guion y producción:</strong> Champi Sikora.</p>
+        <p class="credits-note"><strong>Edición y recursos:</strong> SwebAI Studio.</p>
+        <p class="credits-note">Gracias por apoyar este contenido enfocado en crear soluciones de inteligencia artificial.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <p class="footer-title"><strong>Codex CLI</strong> - Guía práctica para desarrolladores</p>
+    <div class="footer-cta">
+      <p>¿Querés desarrollar una solución de inteligencia artificial?</p>
+      <a href="https://sikja.github.io/Portfolio/" class="cta-link" target="_blank" rel="noopener noreferrer" aria-label="Contactame para desarrollar una solución de inteligencia artificial">Contactame</a>
+    </div>
+    <p>Contenido educativo - Visita mi <a href="#" aria-label="Canal de YouTube">YouTube</a> y descarga la guía completa en <a href="#" aria-label="Página de Notion">Notion</a></p>
+    <p>?? Envía "IA" por DM para recibir esta guía en PDF</p>
+  </footer>
+
+  <script>
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all sections
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+
+    // Tab switching functionality
+    function switchTab(tabName, trigger) {
+      const buttons = document.querySelectorAll('.tab-button');
+      const contents = document.querySelectorAll('.tab-content');
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+      contents.forEach(content => content.classList.remove('active'));
+
+      const targetButton = trigger instanceof HTMLElement ? trigger : document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+      const targetContent = document.getElementById(tabName);
+
+      if (targetButton) {
+        targetButton.classList.add('active');
+      }
+
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+    }
+
+    function togglePromptContent() {
+      const preview = document.getElementById('promptPreview');
+      const complete = document.getElementById('promptComplete');
+      const button = document.getElementById('expandPromptBtn');
+      const isHidden = complete && (complete.style.display === 'none' || complete.style.display === '');
+
+      if (!preview || !complete || !button) {
+        return;
+      }
+
+      if (isHidden) {
+        complete.style.display = 'block';
+        preview.style.display = 'none';
+        button.textContent = 'Ocultar prompt completo';
+      } else {
+        complete.style.display = 'none';
+        preview.style.display = 'block';
+        button.textContent = 'Ver prompt completo';
+      }
+    }
+
+    function getPromptText() {
+      const codeElement = document.querySelector('#promptComplete pre code');
+      return codeElement ? codeElement.textContent.trim() : '';
+    }
+
+    function copyPrompt(button) {
+      const promptText = getPromptText();
+      if (!promptText || !button) {
+        return;
+      }
+      copyCode(button, promptText);
+    }
+
+    // Copy to clipboard functionality
+    async function copyCode(button, text) {
+      if (!button) {
+        return;
+      }
+
+      const originalText = button.dataset.originalText || button.textContent;
+      button.dataset.originalText = originalText;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = 'Copiado!';
+        button.classList.add('copied');
+
+        setTimeout(() => {
+          button.textContent = button.dataset.originalText || originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+        fallbackCopyTextToClipboard(text, button);
+      }
+    }
+
+    // Fallback copy function
+    function fallbackCopyTextToClipboard(text, button) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.top = '0';
+      textArea.style.left = '0';
+      textArea.style.width = '2em';
+      textArea.style.height = '2em';
+      textArea.style.padding = '0';
+      textArea.style.border = 'none';
+      textArea.style.outline = 'none';
+      textArea.style.boxShadow = 'none';
+      textArea.style.background = 'transparent';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        document.execCommand('copy');
+        if (button) {
+          const originalText = button.dataset.originalText || button.textContent;
+          button.dataset.originalText = originalText;
+          button.textContent = 'Copiado!';
+          button.classList.add('copied');
+
+          setTimeout(() => {
+            button.textContent = button.dataset.originalText || originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Fallback: Unable to copy', err);
+      }
+
+      document.body.removeChild(textArea);
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const headerOffset = 80;
+          const elementPosition = target.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      // ESC to close any focused element
+      if (e.key === 'Escape') {
+        document.activeElement.blur();
+      }
+      
+      // Alt + Number to jump to sections
+      if (e.altKey && e.key >= '1' && e.key <= '9') {
+        e.preventDefault();
+        const sections = document.querySelectorAll('section[id]');
+        const index = parseInt(e.key) - 1;
+        if (sections[index]) {
+          sections[index].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add ARIA labels to copy buttons based on their context
+      document.querySelectorAll('.copy-button').forEach(button => {
+        const codeBlock = button.closest('.code-block');
+        const lang = codeBlock.querySelector('.code-lang')?.textContent || 'codigo';
+        if (!button.getAttribute('aria-label')) {
+          button.setAttribute('aria-label', `Copiar ${lang}`);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
